@@ -1,6 +1,6 @@
 import 'dart:core';
 
-class OrderForListing{
+class SingleOrder{
 
   int id;
   String name;
@@ -14,21 +14,21 @@ class OrderForListing{
   String status;
   DateTime date_created;
 
-  OrderForListing({
-      this.id,
-      this.name,
-      this.price,
-      this.description,
-      this.image,
-      this.url,
-      this.views,
-      this.total_order,
-      this.total_revenue,
-      this.status,
-      this.date_created });
+  SingleOrder({
+    this.id,
+    this.name,
+    this.price,
+    this.description,
+    this.image,
+    this.url,
+    this.views,
+    this.total_order,
+    this.total_revenue,
+    this.status,
+    this.date_created });
 
-  factory OrderForListing.fromJson(Map < String, dynamic> item){
-      return OrderForListing(
+  factory SingleOrder.fromJson(Map < String, dynamic> item){
+    return SingleOrder(
       id: item['id'] ,
       name: item['name'],
       price: item['price'],
@@ -40,7 +40,7 @@ class OrderForListing{
       total_revenue: item['total_revenue'],
       status: item['status'],
       date_created: DateTime.parse(item["date_created"]),
-      );
+    );
   }
 
 }

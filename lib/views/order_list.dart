@@ -47,7 +47,8 @@ class _OrderListState extends State<OrderList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => OrderModify()));
+              .push(MaterialPageRoute(builder: (context) => OrderModify()))
+              .then((_) => _fetchOrders());
         },
         child: Icon(Icons.add),
       ),
