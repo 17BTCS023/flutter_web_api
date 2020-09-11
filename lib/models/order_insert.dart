@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-class OrderInsert {
+class OrderManipulation {
   // int id;
   String name;
   double price;
@@ -11,7 +11,7 @@ class OrderInsert {
   int total_revenue;
   String status;
 
-  OrderInsert(
+  OrderManipulation(
       {
         // @required this.id,
         @required this.name,

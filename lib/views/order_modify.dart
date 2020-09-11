@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:flutter/services.dart';
-import 'package:flutter_web_api/models/order_insert.dart';
 import 'package:flutter_web_api/models/single_order.dart';
 import 'package:flutter_web_api/services/order_service.dart';
 import 'package:get_it/get_it.dart';
@@ -52,6 +51,9 @@ class _OrderModifyState extends State<OrderModify> {
   SingleOrder order;
   String errorMessage;
   bool _isLoading = false;
+
+  Uri addressUri = Uri.parse('https://l5vqpgr2pd.execute-api.us-west-2.amazonaws.com/dev/api/v1/product/');
+
 
   TextEditingController _idController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
@@ -255,7 +257,7 @@ class _OrderModifyState extends State<OrderModify> {
                             ),
                           ],
                         ),
-                        Text('Half Body',
+                        Text('Product Image',
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -283,12 +285,12 @@ class _OrderModifyState extends State<OrderModify> {
                     onPressed: (() async {
                       if (isEditing) {
                         // update the order
-                        // _updateOrder()
+                        _updateOrder();
                       }
                       else {
                         // create the order
                         if (_formKey.currentState.validate()) {
-                          _startUploading();
+                          _startUploading(addressUri);
                         }
                       }
                     }),
@@ -346,14 +348,9 @@ class _OrderModifyState extends State<OrderModify> {
   //   });
   // }
 
-  Uri addressUri = Uri.parse('https://l5vqpgr2pd.execute-api.us-west-2.amazonaws.com/dev/api/v1/product/');
 
   Future<Map<String, dynamic>> _uploadImage(File image) async {
     print('INSIDE UPLOAD IMAGE METHOD');
-
-    // setState(() {
-    //   pr.show();
-    // });
     final mimeTypeData =
     lookupMimeType(image.path, headerBytes: [0xFF, 0xD8]).split('/');
     _image = image;
@@ -460,7 +457,7 @@ class _OrderModifyState extends State<OrderModify> {
         });
   }
 
-  void _startUploading() async {
+  void _startUploading(Uri uri) async {
     print('START UPLOADING WAS called');
     final Map<String, dynamic> response = await _uploadImage(_image);
     print('Value of response of : $response');
@@ -496,5 +493,70 @@ class _OrderModifyState extends State<OrderModify> {
           );
         });
   }
+
+  Future<void> _updateOrder() async {
+    Uri updateAddressUri = Uri.parse(
+    'https://l5vqpgr2pd.execute-api.us-west-2.amazonaws.com/dev/api/v1/product/${order.id}/');
+    print('START UPLOADING WAS called');
+    final Map<String, dynamic> response = await _updateImage(_image, updateAddressUri);
+    print('Value of response of : $response');
+    if (response == null) {
+      messageAllert('User details updated successfully', 'Success');
+    } else {
+      messageAllert('Please Select a profile photo', 'Profile Photo');
+    }
+  }
+
+    Future<Map<String, dynamic>> _updateImage(File image, Uri uri) async {
+      print('INSIDE UPdate IMAGE METHOD');
+      final mimeTypeData =
+      lookupMimeType(image.path, headerBytes: [0xFF, 0xD8]).split('/');
+      _image = image;
+      print('IMAGE : $image');
+      // Intilize the multipart request
+      final imageUploadRequest = http.MultipartRequest('PUT', uri);
+
+      // Attach the file in the request
+      final file = await http.MultipartFile.fromPath(
+          'image', image.path ,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
+      // Explicitly pass the extension of the image with request body
+      // Since image_picker has some bugs due which it mixes up
+      // image extension with file name like this filenamejpge
+      // Which creates some problem at the server side to manage
+      // or verify the file extension
+
+      // imageUploadRequest.fields['ext'] = mimeTypeData[1];
+      imageUploadRequest.files.add(file);
+      imageUploadRequest.fields['name'] = _nameController.text;
+      imageUploadRequest.fields['price'] = _priceController.text;
+      imageUploadRequest.fields['description'] = _descriptionController.text;
+      imageUploadRequest.fields['url'] = _urlController.text;
+      imageUploadRequest.fields['views'] = _viewsController.text;
+      imageUploadRequest.fields['total_order'] = _total_orderController.text;
+      imageUploadRequest.fields['total_revenue'] = _total_revenueController.text;
+      imageUploadRequest.fields['status'] = 'ACTIVE';
+
+      try {
+        final streamedResponse = await imageUploadRequest.send();
+        final response = await http.Response.fromStream(streamedResponse);
+        if (response.statusCode != 204) {
+          print("Status code is : ${response.statusCode}");
+          print("Body is : ${response.body}");
+
+          return null;
+        }
+        print("Status code is : ${response.statusCode}");
+        print("Body is : ${response.body}");
+
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        print("Body of response  : ${response.body}");
+        return responseData;
+      } catch (e) {
+        print('ERROR IS : $e');
+        return null;
+      }
+    }
+
 
 }

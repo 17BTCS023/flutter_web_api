@@ -7,6 +7,127 @@ import 'package:get_it/get_it.dart';
 
 import 'order_delete.dart';
 
+// class OrderList extends StatefulWidget {
+//
+//   @override
+//   _OrderListState createState() => _OrderListState();
+// }
+//
+// class _OrderListState extends State<OrderList> {
+//  OrderService get service => GetIt.instance<OrderService>();
+//
+//  APIResponse<List<OrderForListing>> _apiResponse;
+//  bool _isLoading = false;
+//  @override
+//   void initState() {
+//    _fetchOrders();
+//     super.initState();
+//   }
+//
+//   _fetchOrders() async {
+//    setState((){
+//      _isLoading = true;
+//    });
+//
+//    print('fetching Orders .....*************************');
+//
+//    _apiResponse = await service.getOrdersList();
+//
+//    setState((){
+//      _isLoading = false;
+//    });
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('List of Orders'),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () {
+//           Navigator.of(context)
+//               .push(MaterialPageRoute(builder: (context) => OrderModify()))
+//               .then((_) => _fetchOrders());
+//         },
+//         child: Icon(Icons.add),
+//       ),
+//       body: Builder(builder: (_){
+//         if(_isLoading){
+//           return Center(child: CircularProgressIndicator());
+//         }
+//         if( _apiResponse.error){
+//           return Center(child: Text(_apiResponse.errorMessage));
+//         }
+//         return ListView.separated(
+//               separatorBuilder: (_, __) => Divider(height: 1, color: Colors.grey),
+//               itemBuilder: (_, index) {
+//                 return Dismissible(
+//                   key: ValueKey(_apiResponse.data[index].id.toString()),
+//                   direction: DismissDirection.startToEnd,
+//                   onDismissed: (direction){
+//                   },
+//                   confirmDismiss: (direction) async {
+//                     final result  = await showDialog(
+//                         context: context,
+//                         builder: (_) => OrderDelete());
+//
+//                     if(result){
+//
+//                       var message;
+//                       final deleteResult = await service.deleteOrder(_apiResponse.data[index].id.toString());
+//                       if(deleteResult != null && deleteResult.data == true){
+//                         message = 'The product is deleted successfully';
+//                       }
+//                       else{
+//                         message =  deleteResult ?.errorMessage ?? 'An error occurred';
+//                       }
+//
+//                       showDialog(context: context,
+//                           builder: (_) => AlertDialog(
+//                               title: Text('Done'),
+//                               content: Text(message),
+//                               actions:<Widget>[
+//                                 FlatButton(
+//                                   child: Text('OK'),
+//                                   onPressed: (){
+//                                     Navigator.of(context).pop();
+//                                   },
+//                                 )
+//                               ]
+//                           ));
+//                       return deleteResult?.data ?? false;
+//                     }
+//                     return result;
+//                   },
+//                   background: Container(
+//                     color: Colors.redAccent,
+//                     child: Icon(Icons.delete, color: Colors.white,),alignment: Alignment.centerLeft,
+//                   ),
+//                   child: ListTile(
+//                     title: Text(
+//                       _apiResponse.data[index].name,
+//                       style: TextStyle(
+//                         color: Theme.of(context).primaryColor,
+//                       ),
+//                     ),
+//                     subtitle: Text('Rs. ' + _apiResponse.data[index].price.toString()),
+//                     onTap: (){
+//                       Navigator.of(context).push(MaterialPageRoute(builder : (_) => OrderModify(orderId: _apiResponse.data[index].id.toString())));
+//                     },
+//                   ),
+//                 );
+//
+//               },
+//               itemCount: _apiResponse.data.length
+//           );
+//
+//       })
+//     );
+//   }
+// }
+import 'order_delete.dart';
+
 class OrderList extends StatefulWidget {
 
   @override
@@ -14,52 +135,52 @@ class OrderList extends StatefulWidget {
 }
 
 class _OrderListState extends State<OrderList> {
- OrderService get service => GetIt.instance<OrderService>();
+  OrderService get service => GetIt.instance<OrderService>();
 
- APIResponse<List<OrderForListing>> _apiResponse;
- bool _isLoading = false;
- @override
+  APIResponse<List<OrderForListing>> _apiResponse;
+  bool _isLoading = false;
+  @override
   void initState() {
-   _fetchOrders();
+    _fetchOrders();
     super.initState();
   }
 
   _fetchOrders() async {
-   setState((){
-     _isLoading = true;
-   });
+    setState((){
+      _isLoading = true;
+    });
 
-   print('fetching Orders .....*************************');
+    print('fetching Orders .....*************************');
 
-   _apiResponse = await service.getOrdersList();
+    _apiResponse = await service.getOrdersList();
 
-   setState((){
-     _isLoading = false;
-   });
+    setState((){
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('List of Orders'),
-      ),
-      floatingActionButton: FloatingActionButton(
+        appBar: AppBar(
+          title: Text('List of Orders'),
+        ),
+        floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => OrderModify()))
               .then((_) => _fetchOrders());
         },
-        child: Icon(Icons.add),
-      ),
-      body: Builder(builder: (_){
-        if(_isLoading){
-          return Center(child: CircularProgressIndicator());
-        }
-        if( _apiResponse.error){
-          return Center(child: Text(_apiResponse.errorMessage));
-        }
-        return ListView.separated(
+          child: Icon(Icons.add),
+        ),
+        body: Builder(builder: (_){
+          if(_isLoading){
+            return Center(child: CircularProgressIndicator());
+          }
+          if( _apiResponse.error){
+            return Center(child: Text(_apiResponse.errorMessage));
+          }
+          return ListView.separated(
               separatorBuilder: (_, __) => Divider(height: 1, color: Colors.grey),
               itemBuilder: (_, index) {
                 return Dismissible(
@@ -71,6 +192,33 @@ class _OrderListState extends State<OrderList> {
                     final result  = await showDialog(
                         context: context,
                         builder: (_) => OrderDelete());
+
+                    if(result){
+
+                      var message;
+                      final deleteResult = await service.deleteOrder(_apiResponse.data[index].id.toString());
+                      if(deleteResult != null && deleteResult.data == true){
+                        message = 'The product is deleted successfully';
+                      }
+                      else{
+                        message =  deleteResult ?.errorMessage ?? 'An error occured';
+                      }
+
+                      showDialog(context: context,
+                          builder: (_) => AlertDialog(
+                              title: Text('Done'),
+                              content: Text(message),
+                              actions:<Widget>[
+                                FlatButton(
+                                  child: Text('OK'),
+                                  onPressed: (){
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ]
+                          ));
+                      return deleteResult?.data ?? false;
+                    }
                     return result;
                   },
                   background: Container(
@@ -86,7 +234,10 @@ class _OrderListState extends State<OrderList> {
                     ),
                     subtitle: Text('Rs. ' + _apiResponse.data[index].price.toString()),
                     onTap: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder : (_) => OrderModify(orderId: _apiResponse.data[index].id.toString())));
+                      Navigator.of(context).push(MaterialPageRoute(builder : (_) => OrderModify(orderId: _apiResponse.data[index].id.toString()))).then((data)
+                      {
+                        _fetchOrders();
+                      });
                     },
                   ),
                 );
@@ -95,7 +246,7 @@ class _OrderListState extends State<OrderList> {
               itemCount: _apiResponse.data.length
           );
 
-      })
+        })
     );
   }
 }
