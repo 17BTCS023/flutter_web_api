@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_api/services/order_service.dart';
 import 'package:flutter_web_api/views/order_list.dart';
+import 'package:flutter_web_api/views/registration.dart';
 import 'package:get_it/get_it.dart';
 import 'models/order_for_listing.dart';
 
@@ -19,7 +20,7 @@ void main() {
   runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: OrderList(),
+        home: Registration(),
 
 ));
 }
