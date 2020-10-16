@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_web_api/models/registration_object.dart';
 import 'package:flutter_web_api/services/user_services.dart';
+import 'package:flutter_web_api/views/login.dart';
 
 import 'order_modify.dart';
 
@@ -85,7 +86,7 @@ class _RegistrationState extends State<Registration> {
                       },
                       color:  Colors.blueAccent,
                       child: Text(
-                        "Post",
+                        "Register",
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -106,6 +107,6 @@ class _RegistrationState extends State<Registration> {
       RegistrationObject obj = RegistrationObject(userName:username, email: email, password1: password, password2: confirmPassword);
       await UserServices().registerUser(obj);
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => OrderModify()));
+          .push(MaterialPageRoute(builder: (context) => Login()));
   }
 }
